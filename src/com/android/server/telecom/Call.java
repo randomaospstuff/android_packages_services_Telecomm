@@ -246,7 +246,7 @@ public class Call implements CreateConnectionResponse, EventManager.Loggable,
     /**
      * The post-dial digits that were dialed after the network portion of the number
      */
-    private final String mPostDialDigits;
+    private String mPostDialDigits;
 
     /**
      * The secondary line number that an incoming call has been received on if the SIM subscription
@@ -975,6 +975,10 @@ public class Call implements CreateConnectionResponse, EventManager.Loggable,
         return mHandle;
     }
 
+    public void setPostDialDigits(String postDialDigits) {
+        mPostDialDigits = postDialDigits;
+    }
+
     public String getPostDialDigits() {
         return mPostDialDigits;
     }
@@ -1396,6 +1400,10 @@ public class Call implements CreateConnectionResponse, EventManager.Loggable,
 
     long getConnectTimeMillis() {
         return mConnectTimeMillis;
+    }
+
+    public void setConnectTimeMillis(long connectTimeMillis) {
+        mConnectTimeMillis = connectTimeMillis;
     }
 
     int getConnectionCapabilities() {
@@ -2134,6 +2142,14 @@ public class Call implements CreateConnectionResponse, EventManager.Loggable,
         } else {
             Log.addEvent(this, LogUtils.Events.SPLIT_FROM_CONFERENCE);
             mConnectionService.splitFromConference(this);
+        }
+    }
+
+    void addParticipantWithConference(String recipients) {
+        if (mConnectionService == null) {
+            Log.w(this, "conference requested on a call without a connection service.");
+        } else {
+            mConnectionService.addParticipantWithConference(this, recipients);
         }
     }
 
